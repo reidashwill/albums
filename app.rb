@@ -20,12 +20,12 @@ get('/albums') do
 end
 
 get('/albums/new') do
-  Album.allow_edits
   erb(:new_album)
 end
 
 get('/albums/:id') do
   @album = Album.find(params[:id].to_i())
+  @albums = Album.all
   erb(:album)
 end
 
@@ -35,20 +35,12 @@ get('/albums/:id/edit') do
 end
 
 post('/albums') do
-  if Album.edits_are_allowed
     name = params[:album_name]
     album = Album.new(name, nil)
     album.save()
     @albums = Album.all()
     erb(:albums)
-  else
-    erb(:not_allowed)
-  end
 end
-
-# get('/albums/:id/edit') do
-#   "This will take us to a page with a form for updating an album with an ID of #{params[:id]}."
-# end
 
 patch('/albums/:id') do
   @album = Album.find(params[:id].to_i())
@@ -57,10 +49,9 @@ patch('/albums/:id') do
   erb(:albums)
 end
 
-# delete('/albums/:id') do
-#   "This route will delete an album. We can't reach it with a URL. In a future lesson, we will use a delete button that specifies a DELETE action to reach this route."
-# end
-
-# get('/custom_route') do
-#   "We can even create custom routes, but we should only do this when needed."
-# end
+delete('/albums/:id') do
+  @album = Album.find(params[:id].to_i())
+  @album.delete()
+  @albums= Album.all
+  erb (:albums)
+end
